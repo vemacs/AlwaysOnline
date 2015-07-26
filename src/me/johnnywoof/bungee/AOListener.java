@@ -100,6 +100,9 @@ public class AOListener implements Listener {
         }
     }
 
+    private Field uniqueId;
+    private Field offlineId;
+
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPost(final PostLoginEvent event) {
@@ -115,13 +118,17 @@ public class AOListener implements Listener {
                     return;
                 }
                 //Reflection
-                Field sf = handler.getClass().getDeclaredField("uniqueId");
-                sf.setAccessible(true);
-                sf.set(handler, uuid);
+                if (uniqueId == null) {
+                    uniqueId = handler.getClass().getDeclaredField("uniqueId");
+                    uniqueId.setAccessible(true);
+                }
+                uniqueId.set(handler, uuid);
 
-                sf = handler.getClass().getDeclaredField("offlineId");
-                sf.setAccessible(true);
-                sf.set(handler, uuid);
+                if (offlineId == null) {
+                    offlineId = handler.getClass().getDeclaredField("offlineId");
+                    offlineId.setAccessible(true);
+                }
+                offlineId.set(handler, uuid);
 
                 Collection<String> g = ao.getProxy().getConfigurationAdapter().getGroups(event.getPlayer().getName());
                 g.addAll(ao.getProxy().getConfigurationAdapter().getGroups(event.getPlayer().getUniqueId().toString()));
