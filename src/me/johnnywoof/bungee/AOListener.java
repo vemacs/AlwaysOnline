@@ -67,7 +67,8 @@ public class AOListener implements Listener {
             final String ip = handler.getAddress().getAddress().getHostAddress();
             String username = event.getConnection().getName();
             PlayerData data = ao.db.getData(event.getConnection().getName());
-            final String lastIp = data.ipAddress;
+            String lastIp = null;
+            if (data != null) lastIp = data.ipAddress;
 
             if (lastIp == null) {
                 event.setCancelReason(kick_new_player);
