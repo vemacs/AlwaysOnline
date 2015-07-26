@@ -11,104 +11,104 @@ import java.io.IOException;
 
 public class AOCommand extends Command {
 
-	private final File state_path;
+    private final File state_path;
 
-	private final AlwaysOnline ao;
+    private final AlwaysOnline ao;
 
-	public AOCommand(AlwaysOnline ao) {
-		super("alwaysonline", "alwaysonline.usage", "ao");
+    public AOCommand(AlwaysOnline ao) {
+        super("alwaysonline", "alwaysonline.usage", "ao");
 
-		this.ao = ao;
+        this.ao = ao;
 
-		this.state_path = new File(ao.getDataFolder(), "state.txt");
+        this.state_path = new File(ao.getDataFolder(), "state.txt");
 
-	}
+    }
 
-	public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
 
-		if (args.length <= 0) {
+        if (args.length <= 0) {
 
-			this.displayHelp(sender);
+            this.displayHelp(sender);
 
-		} else {
+        } else {
 
-			switch (args[0].toLowerCase()) {
-				case "toggle":
+            switch (args[0].toLowerCase()) {
+                case "toggle":
 
-					AlwaysOnline.mojangOnline = !AlwaysOnline.mojangOnline;
+                    AlwaysOnline.mojangOnline = !AlwaysOnline.mojangOnline;
 
-					ao.disabled = !AlwaysOnline.mojangOnline;
+                    ao.disabled = !AlwaysOnline.mojangOnline;
 
-					sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "Mojang offline mode is now " + ((!AlwaysOnline.mojangOnline ? ChatColor.GREEN + "enabled" : ChatColor.RED + "disabled")) + ChatColor.GOLD + "!"));
+                    sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "Mojang offline mode is now " + ((!AlwaysOnline.mojangOnline ? ChatColor.GREEN + "enabled" : ChatColor.RED + "disabled")) + ChatColor.GOLD + "!"));
 
-					if (AlwaysOnline.mojangOnline) {
+                    if (AlwaysOnline.mojangOnline) {
 
-						sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline will now treat the mojang servers as being online."));
+                        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline will now treat the mojang servers as being online."));
 
-					} else {
+                    } else {
 
-						sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline will no longer treat the mojang servers as being online."));
+                        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline will no longer treat the mojang servers as being online."));
 
-					}
+                    }
 
-					break;
-				case "disable":
+                    break;
+                case "disable":
 
-					ao.disabled = true;
+                    ao.disabled = true;
 
-					sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline has been disabled! AlwaysOnline will no longer check to see if the session server is offline."));
+                    sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline has been disabled! AlwaysOnline will no longer check to see if the session server is offline."));
 
-					break;
-				case "enable":
+                    break;
+                case "enable":
 
-					ao.disabled = false;
+                    ao.disabled = false;
 
-					sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline has been enabled! AlwaysOnline will now check to see if the session server is offline."));
+                    sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "AlwaysOnline has been enabled! AlwaysOnline will now check to see if the session server is offline."));
 
-					break;
-				case "reload":
+                    break;
+                case "reload":
 
-					ao.reload();
+                    ao.reload();
 
-					sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "Configuration file has been reloaded!"));
+                    sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "Configuration file has been reloaded!"));
 
-					break;
-				default:
+                    break;
+                default:
 
-					this.displayHelp(sender);
+                    this.displayHelp(sender);
 
-					break;
-			}
+                    break;
+            }
 
-			try {
+            try {
 
-				FileWriter w = new FileWriter(this.state_path);
+                FileWriter w = new FileWriter(this.state_path);
 
-				w.write(ao.disabled + ":" + AlwaysOnline.mojangOnline);
+                w.write(ao.disabled + ":" + AlwaysOnline.mojangOnline);
 
-				w.close();
+                w.close();
 
-			} catch (IOException e) {
+            } catch (IOException e) {
 
-				ao.getLogger().warning("Failed to save state. This error is not severe. [" + e.getMessage() + "]");
+                ao.getLogger().warning("Failed to save state. This error is not severe. [" + e.getMessage() + "]");
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
-	private void displayHelp(CommandSender sender) {
+    private void displayHelp(CommandSender sender) {
 
-		sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "[" + ChatColor.DARK_GREEN + "AlwaysOnline " + ChatColor.GRAY + ao.getDescription().getVersion() + "" + ChatColor.GOLD + "]" + ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + "----------"));
+        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + "----------" + ChatColor.GOLD + "[" + ChatColor.DARK_GREEN + "AlwaysOnline " + ChatColor.GRAY + ao.getDescription().getVersion() + "" + ChatColor.GOLD + "]" + ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + "----------"));
 
-		sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline toggle - " + ChatColor.DARK_GREEN + "Toggles between mojang online mode"));
-		sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline enable - " + ChatColor.DARK_GREEN + "Enables the plugin"));
-		sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline disable - " + ChatColor.DARK_GREEN + "Disables the plugin"));
-		sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline reload - " + ChatColor.DARK_GREEN + "Reloads the configuration file"));
+        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline toggle - " + ChatColor.DARK_GREEN + "Toggles between mojang online mode"));
+        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline enable - " + ChatColor.DARK_GREEN + "Enables the plugin"));
+        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline disable - " + ChatColor.DARK_GREEN + "Disables the plugin"));
+        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "/alwaysonline reload - " + ChatColor.DARK_GREEN + "Reloads the configuration file"));
 
-		sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + "------------------------------"));
+        sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD + "" + ChatColor.STRIKETHROUGH + "------------------------------"));
 
-	}
+    }
 
 }
