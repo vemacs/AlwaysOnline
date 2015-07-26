@@ -1,27 +1,36 @@
-*.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
-## eclipse
-/eclipse
-/.settings
-/.metadata
+# Eclipse stuff
 /.classpath
 /.project
+/.settings
+
+# netbeans
+/nbproject
+/nbactions.xml
+/nb-configuration.xml
+
+# we use maven!
+/build.xml
+
+# maven
+/target
+/dependency-reduced-pom.xml
+*/target
+*/dependency-reduced-pom.xml
+
+# vim
+.*.sw[a-p]
+
+# various other potential build files
+/build
 /bin
-## intellij
-/out
-/.idea
-/*.iml
-/*.ipr
-/*.iws
-/atlassian-ide-plugin.xml
+/dist
+/manifest.mf
+
+# Mac filesystem dust
+/.DS_Store
+
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea/

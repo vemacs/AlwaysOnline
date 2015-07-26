@@ -16,9 +16,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class AlwaysOnline extends Plugin {
-    public static boolean mojangOnline = true;
     public boolean disabled = false;
     public Database db = null;
+
+    private boolean prevOnline = true;
+    private boolean currOnline = true;
+    public static boolean mojangOnline = true;
 
     @Override
     public void onEnable() {
@@ -44,22 +47,18 @@ public class AlwaysOnline extends Plugin {
                 return;
 
             }
-            int ct = yml.getInt("check-interval", 30);
-            if (ct < 15) {
-                this.getLogger().warning("Your check-interval is less than 15 seconds. This can cause a lot of false positives, so please set it to a higher number!");
-            }
-            if (yml.getBoolean("use_mysql", false) || yml.getInt("database-type", 0) == 2) {
-                try {
+            int ct = yml.getInt("check-interval", 20);
 
-                    this.db = new MySQLDatabase(yml.getString("host"),
-                            yml.getInt("port"),
-                            yml.getString("database-name"),
-                            yml.getString("database-username"),
-                            yml.getString("database-password"));
-                } catch (SQLException e) {
-                    this.getLogger().info("DB load fail");
-                    return;
-                }
+            try {
+
+                this.db = new MySQLDatabase(yml.getString("host"),
+                        yml.getInt("port"),
+                        yml.getString("database-name"),
+                        yml.getString("database-username"),
+                        yml.getString("database-password"));
+            } catch (SQLException e) {
+                this.getLogger().info("DB load fail");
+                return;
             }
 
             this.getLogger().info("Database is ready to go!");
@@ -99,13 +98,18 @@ public class AlwaysOnline extends Plugin {
                 @Override
                 public void run() {
                     if (!disabled) {
-                        boolean isOnline = Utils.isSessionServerOnline();
-                        if (isOnline && !mojangOnline) {
-                            mojangOnline = true;
-                            getLogger().info("Mojang session servers are back online!");
-                        } else if (!isOnline && AlwaysOnline.mojangOnline) {
-                            AlwaysOnline.mojangOnline = false;
-                            getLogger().info("Mojang session servers are now offline!");
+                        prevOnline = currOnline;
+                        currOnline = Utils.isSessionServerOnline();
+                        if (prevOnline && currOnline) {
+                            if (!mojangOnline) {
+                                mojangOnline = true;
+                                getLogger().info("Mojang session servers are online (2x consecutive)!");
+                            }
+                        } else {
+                            if (mojangOnline) {
+                                mojangOnline = false;
+                                getLogger().info("Mojang session servers are offline!");
+                            }
                         }
                     }
                 }

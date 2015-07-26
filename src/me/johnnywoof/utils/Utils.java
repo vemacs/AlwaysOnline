@@ -13,8 +13,8 @@ public class Utils {
     public static boolean isSessionServerOnline() {
         try {
             HttpsURLConnection connection = (HttpsURLConnection) new URL("https://sessionserver.mojang.com").openConnection();
-            connection.setConnectTimeout(1000);
-            connection.setReadTimeout(1000);
+            connection.setConnectTimeout(500);
+            connection.setReadTimeout(500);
             connection.setRequestMethod("HEAD");
             int responseCode = connection.getResponseCode();
             connection.disconnect();
